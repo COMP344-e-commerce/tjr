@@ -1,113 +1,84 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: ecomp344
--- ------------------------------------------------------
--- Server version	5.6.37-log
+CREATE DATABASE bookstore;
+use bookstore;
+CREATE TABLE IF NOT EXISTS `user`
+(
+  `userID`                 INT          NOT NULL AUTO_INCREMENT,
+  `userNickName`           VARCHAR(45)  NOT NULL,
+  `userFirstName`          VARCHAR(45)  NOT NULL,
+  `userMiddleName`         VARCHAR(45)  NOT NULL,
+  `userLastName`           VARCHAR(45)  NOT NULL,
+  `email`                  VARCHAR(60)  NOT NULL,
+  `country`                VARCHAR(30)  NOT NULL,
+  `state`                  VARCHAR(30)  NOT NULL,
+  `city`                   VARCHAR(30)  NOT NULL,
+  `address`                VARCHAR(100) NOT NULL,
+  `postCode`               CHAR(6)      NOT NULL,
+  `creditCardNumber`       VARCHAR(32)  NULL,
+  `creditCardSecurityCode` CHAR(3)      NULL,
+  `password`               VARCHAR(120) NOT NULL,
+  PRIMARY KEY (`userID`)
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `bookinformation`
---
+CREATE TABLE IF NOT EXISTS `author`
+(
+  `authorID`           INT         NOT NULL AUTO_INCREMENT,
+  `authorFirstName`    VARCHAR(45) NOT NULL,
+  `authorMiddleName`   VARCHAR(45) NULL,
+  `authorLastName`     VARCHAR(45) NOT NULL,
+  `authorEmailAddress` VARCHAR(60) NULL,
+  PRIMARY KEY (`authorID`)
+);
 
-DROP TABLE IF EXISTS `bookinformation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bookinformation` (
-  `bookISBN` varchar(45) NOT NULL,
-  `booktitle` varchar(45) DEFAULT NULL,
-  `picture` varchar(45) DEFAULT NULL,
-  `authors` varchar(45) DEFAULT NULL,
-  `pagenumbers` varchar(45) DEFAULT NULL,
-  `publisher` varchar(45) DEFAULT NULL,
-  `publishyear` varchar(45) DEFAULT NULL,
-  `price` float NOT NULL,
-  PRIMARY KEY (`bookISBN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS `publisher`
+(
+  `publisherID`        CHAR(5)     NOT NULL,
+  `publisherName`      VARCHAR(45) NULL,
+  `publisherCity`      VARCHAR(30) NULL,
+  `publisherContactNo` CHAR(14)    NULL,
+  PRIMARY KEY (`publisherID`)
+);
 
---
--- Dumping data for table `bookinformation`
---
+create table if not exists `unit`
+(
+`unitID`	int	not null auto_increment,
+`unitName`	varchar(30),
+primary key (`unitID`)
+);
 
-LOCK TABLES `bookinformation` WRITE;
-/*!40000 ALTER TABLE `bookinformation` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bookinformation` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE IF NOT EXISTS `book`
+(
+  `bookISBN`    VARCHAR(45)   NOT NULL,
+  `bookTitle`   VARCHAR(45)   NOT NULL,
+  `cover`       VARCHAR(45)   NULL,
+  `bookPrice`   DECIMAL(6, 2) NOT NULL,
+  `pageNumber`  INT           NOT NULL,
+  `publisherID` CHAR(5)       NULL,
+  `publishYear` VARCHAR(5)    NOT NULL,
+  `unitID`      int       NOT NULL,
+  `authorID`	int			  NOT NULL,
+  PRIMARY KEY (`bookISBN`),
+  CONSTRAINT `fk_book_unit` FOREIGN KEY (`unitID`)
+  REFERENCES `unit` (`unitID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_book_author` FOREIGN KEY (`authorID`)
+  REFERENCES `author` (`authorID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
 
---
--- Table structure for table `usertable`
---
-
-DROP TABLE IF EXISTS `usertable`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `usertable` (
-  `username` varchar(45) NOT NULL,
-  `postaddress` varchar(45) NOT NULL,
-  `userID` int(11) NOT NULL AUTO_INCREMENT,
-  `password` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  PRIMARY KEY (`userID`,`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usertable`
---
-
-LOCK TABLES `usertable` WRITE;
-/*!40000 ALTER TABLE `usertable` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usertable` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `wishlist`
---
-
-DROP TABLE IF EXISTS `wishlist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wishlist` (
-  `username` varchar(45) NOT NULL,
-  `bookISBN` varchar(45) NOT NULL,
-  PRIMARY KEY (`username`,`bookISBN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `wishlist`
---
-
-LOCK TABLES `wishlist` WRITE;
-/*!40000 ALTER TABLE `wishlist` DISABLE KEYS */;
-/*!40000 ALTER TABLE `wishlist` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping events for database 'ecomp344'
---
-
---
--- Dumping routines for database 'ecomp344'
---
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2018-07-15 19:25:07
+CREATE TABLE IF NOT EXISTS `wishList`
+(
+  `userID`   INT         NOT NULL,
+  `bookISBN` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`userId`, `bookISBN`),
+  CONSTRAINT `fk_wish_list_user` FOREIGN KEY (`userID`)
+  REFERENCES `user` (`userID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_wish_list_book` FOREIGN KEY (`bookISBN`)
+  REFERENCES `book` (`bookISBN`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
